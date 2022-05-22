@@ -96,11 +96,15 @@ class ShowReport extends React.Component {
 
     const AK = this.state.AK;
 
+    console.log("In getSubordinate :");
+    console.log("empid: ", empid);
+    console.log("AK: ", AK);
+
     const data = axios({
       method: "get",
       url: `https://merp.intermesh.net/index.php/Userlisting/Employeedetails?empid=${empid}&AK=${AK}`, // Lower Trail
     });
-
+    data.then(res => console.log("In the getSubordinates function :", res.data))
     return data;
   };
   getAuthorizationToken = async () => {
@@ -190,19 +194,26 @@ class ShowReport extends React.Component {
   };
 
   componentWillUnmount() {
+    
     this.setState({ freeze: 1 });
   }
   async componentDidMount() {
     // all async requests here for POC , after this will be shifted to Services folder.
 
     const employeeid = this.getUrlParameter("empid");
-
     const reportId = this.getUrlParameter("reportid");
     const userName = this.getUrlParameter("username");
     const tableName = this.getUrlParameter("tableName");
     const columnName = this.getUrlParameter("columnName");
-    const AK = this.getUrlParameter("AK");
+    // const AK = this.getUrlParameter("AK");
     // console.log(AK);
+    let AK;
+    let response = await axios.get(`https://merp.intermesh.net/index.php/Login/loginotpgeneration?usertype=999&display=-1&empid=${employeeid}`);
+    AK = response.data.t;
+
+    console.log("ComponentDidMount in  Showreprot component")
+    console.log("EmployeeId: ", employeeid);
+    console.log("ReportId: ", reportId);
 
     this.setState({
       employeeid,
@@ -213,20 +224,25 @@ class ShowReport extends React.Component {
       AK,
     });
     try {
+
+      console.log("Try in showreport component chala")
       const { data: authenticationToken } = await this.getAuthenticationToken(
         userName
       );
       this.setState({ authenticationToken });
       const { data: apiResponse1 } = await this.getEmbedUrl();
       const { embedUrl, datasetId } = apiResponse1;
+      // console.log("Api Response in showreport component is: ", apiResponse1);
       this.setState({ embedUrl, datasetId });
       const { data: apiResponse } = await this.getAuthorizationToken();
       const { token: authorizationToken } = apiResponse;
+      console.log("api response :", apiResponse);
       this.setState({ authorizationToken });
-
       const { data: data1 } = await this.getSubordinates();
+      console.log("data: ", data1);
+
       const { data: data } = data1;
-      // console.log(data);
+
       const lowerTrail = [];
       const dt = [...data.employeeLowerTrail];
       dt.forEach((ele) => {
@@ -237,6 +253,9 @@ class ShowReport extends React.Component {
 
       this.setState({ freeze: 0 });
     } catch (err) {
+
+      console.log(err);
+      console.log("Catch in showreport component chala")
       if (err.response.status >= 400 && err.response.status < 500) {
         Toastr.error("Invalid URL parameters...");
       } else {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+
 import "./Home.css";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
@@ -23,7 +23,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import LoaderImage from "./Images/loaderpreovp.gif";
 import { Link } from "react-router-dom";
 
-ReactGA.initialize("UA-28761981-1"); //GA Trackingak
+ReactGA.initialize("UA-28761981-1"); //GA Tracking
 
 const styles = (theme) => ({
   root: {
@@ -74,6 +74,11 @@ function groupBy(data, key) {
 class Home extends React.Component {
   constructor() {
     super();
+    this.url1 = "";
+    this.encoded1 = "";
+    this.url2 = "";
+    this.encoded2 = "";
+
     this.state = {
       reports: [],
       monthrep: [],
@@ -85,17 +90,17 @@ class Home extends React.Component {
       open: false,
       freeze: 0,
       overrider: 0,
-      overrider_AK:''
+      overrider_AK: "",
     };
     this.getcategory = this.getcategory.bind(this);
     this.handlePopoverOpen = this.handlePopoverOpen.bind(this);
   }
   //open and close popup
   handlePopoverOpen(event, id, rep2, category) {
-    if ((rep2 && rep2.length !== 1) || !rep2) {
+    if ((rep2 && rep2.length != 1) || !rep2) {
       this.setState({
         expanded: this.state.expanded ? null : id,
-        anchorEl: this.state.anchorEl === event.target ? null : event.target,
+        anchorEl: this.state.anchorEl == event.target ? null : event.target,
       });
     }
   }
@@ -143,13 +148,13 @@ class Home extends React.Component {
               loading: "false",
               freeze: 1,
             });
-            // console.log(error);
+            console.log(error);
             Toastr.error("There is some error while fetching the data");
             //console.log("There is some error while fetching the data");
           }
         );
     } catch (e) {
-      // console.log(e);
+      console.log(e);
     }
   }
 
@@ -178,15 +183,25 @@ class Home extends React.Component {
     var vars = query.split("&");
     for (var i = 0; i < vars.length; i++) {
       var pair = vars[i].split("=");
-      if (pair[0] === variable) {
+      if (pair[0] == variable) {
         return pair[1];
       }
     }
     return false;
   }
-  
+
+  async fetchOverrider(overrider) {
+    let response = await fetch(
+      `https://merp.intermesh.net/index.php/Login/loginotpgeneration?usertype=999&display=-1&empid=${overrider}`
+    );
+    let data = await response.json();
+
+    // console.log("AK running :", data.t);
+
+    return data;
+  }
   // api to verify token and set google anaytics paramters
-  async verifyToken (empid, AK){
+  async verifyToken(empid, AK) {
     if (AK.length > 0) {
       let validate = await fetch(
         "https://merp.intermesh.net/index.php/Userlisting/Employeedetails?empid=" +
@@ -229,9 +244,6 @@ class Home extends React.Component {
     var AK;
     empid = this.getUrlParameter("empid");
     AK = this.getUrlParameter("AK");
-
-    // console.log(empid);
-    // console.log(AK);
     this.setState({
       empid: empid,
       AK: AK,
@@ -240,14 +252,6 @@ class Home extends React.Component {
     await this.verifyToken(empid, AK);
   }
 
-  async getOverrider_AK(overrider) {
-
-    let response = await fetch(`https://merp.intermesh.net/index.php/Login/loginotpgeneration?usertype=999&display=-1&empid=${overrider}`);
-    let data = await response.json();
-    console.log("data", data);
-    return data;
-     
-   }
   render() {
     if (this.state.loading === "true") {
       return (
@@ -290,8 +294,8 @@ class Home extends React.Component {
     const id = open ? "simple-popover" : undefined;
 
     const showreport = (rep2, category) => {
-
-
+      // rep2 is an array of monthly reports
+      // console.log("Showreport: ", rep2);
       if (rep2.length > 1) {
         return (
           <div>
@@ -299,7 +303,9 @@ class Home extends React.Component {
               <span>
                 <h4 className="heading1">{rep2[0].REPORT_NAME}</h4>
               </span>
-              { rep2[0].FK_IIL_MOD_FNS_ID !=='1243' 
+
+              {rep2[0].FK_IIL_MOD_FNS_ID !== '1243'
+              
                 ? rep2.map((row) => {
                     return (
                       <MenuItem>
@@ -361,24 +367,35 @@ class Home extends React.Component {
                     );
                   })
                 : rep2.map((row) => {
-                  
-                  console.log("Row", row);
+                  console.log("Row:",row)
                     const repId = row.REPORT_ID;
                     const userName = row.USER_NAME;
-                  const overrider = row.OVERRIDER_TILL_EMP;
-                  // console.log("Overrider", overrider);
-                  let employeeid = this.empid;
-                  if (overrider !== '-999') {
-                    employeeid = overrider;
-                  }
-                  const Data = this.getOverrider_AK(overrider)  // returns promise
+                  let overrider = this.state.empid;
+                  let AK = this.state.AK;
+                  // let flag = 0 
                   
-                  console.log("AK testing,",Data.then(res=> console.log(res)))
-                    const AK =
-                      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzIzMCIsImV4cCI6MTY1MTYzNjA3NSwiaWF0IjoxNjUxNTQ5Njc1LCJpc3MiOiJFTVBMT1lFRSJ9.9B_aviEm6IhtyozkkRj9nVzxBYMMFwvPuDyZF8-LMz8"
-                    const url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
-                    // console.log(url);
-                    const encoded = btoa(url);
+                  if (row.OVERRIDER_TILL_EMP !== '-999' && row.OVERRIDER_TILL_EMP !== '0') {
+                    overrider = row.OVERRIDER_TILL_EMP;
+                  }
+
+                    // const employeeid = overrider;
+
+                    if (overrider !== this.state.empid) {
+                      this.fetchOverrider(overrider).then((res) => {
+                        // console.log("res: ", res);
+                        AK = res.t;
+                        // console.log("url",url);
+                        // flag = 1;
+                      });
+                    }
+                    let url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+                    let encoded = btoa(url);
+                    // console.log("Data in showreprot", data);
+
+                    // console.log("varun")
+                    // const AK =
+                    //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
+
                     return (
                       <MenuItem>
                         <Link to={`/showreport?X=${encoded}`}>
@@ -402,6 +419,8 @@ class Home extends React.Component {
     const cardheader = (rep2, repos, category) => {
       if (rep2.length > 1) {
         // for monthly reports
+
+        console.log("for monthly reports section in running in cardhearder function")
         return (
           <CardHeader
             avatar={
@@ -426,7 +445,7 @@ class Home extends React.Component {
               <IconButton
                 className={clsx(classes.expand, {
                   [classes.expandOpen]:
-                    expanded == rep2[0].REPORT_CAT_MAPPING_ID,
+                    expanded === rep2[0].REPORT_CAT_MAPPING_ID,
                 })}
                 onClick={(e) =>
                   this.handlePopoverOpen(
@@ -445,24 +464,43 @@ class Home extends React.Component {
           />
         );
       } else {
-
-        console.log('Testing:',rep2[0]);
         if (rep2[0].REPORT_TYPE !== "ERP") {
           // for single reports
+          console.log("For single report is running in the cardheader else part");
           let params = this.getUrlVarsBase64()["W"];
 
-          if (rep2[0].CATEGORY_NAME === "FSF(CSD/KCD)" && rep2[0].FK_IIL_MOD_FNS_ID==='1243') {
+          if (rep2[0].FK_IIL_MOD_FNS_ID === "1243") {
+
+            console.log("rep: ",rep2)
             const repId = rep2[0].REPORT_ID;
             const userName = rep2[0].USER_NAME;
-            const overrider = rep2[0].OVERRIDER_TILL_EMP
-            // console.log("overrider:", overrider)
-            const employeeid = overrider;
-            const AK =
-              "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMzIzMCIsImV4cCI6MTY1MTYzNjA3NSwiaWF0IjoxNjUxNTQ5Njc1LCJpc3MiOiJFTVBMT1lFRSJ9.9B_aviEm6IhtyozkkRj9nVzxBYMMFwvPuDyZF8-LMz8";
+            const overrider = this.state.empid;
+            let AK = this.state.AK;
+            // let flag = 1;
 
-            const url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`; 
-            const encoded = btoa(url);
+            // const employeeid = overrider;
 
+            if (rep2[0].OVERRIDER_TILL_EMP !== '-999' && rep2[0].OVERRIDER_TILL_EMP !== '0' ) {
+              overrider = rep2[0].OVERRIDER_TILL_EMP;
+            }
+
+            if (overrider !== this.state.empid) {
+              this.fetchOverrider(overrider).then((res) => {
+                console.log("res: ", res);
+                AK = res.t;
+                // console.log("url",url);
+                // flag = 1;
+              });
+              }
+              // const employeeid = overrider;
+              // const AK =
+              //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
+              
+              // this.url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+              // this.encoded = btoa(this.url);
+              let url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+              let encoded = btoa(url);
+              
             return (
               <Link to={`/showreport?X=${encoded}`}>
                 <CardHeader
@@ -588,7 +626,6 @@ class Home extends React.Component {
       <div className="app">
         {Object.entries(reportName).map(([name, rep1]) => {
           const reports = groupBy(rep1, "CATEGORY_NAME"); // group json data based on category
-          // console.log("reports",reports);  // category wise report
 
           return (
             <div className="header-border mt-4">
@@ -598,21 +635,17 @@ class Home extends React.Component {
 
               {Object.entries(reports).map(([category, rep]) => {
                 const report = groupBy(rep, "REPORT_NAME"); // group jsaon data based on report name
-                // console.log("report", report); // namewise reports
                 return (
                   <div className="dep">
                     <h2>
                       {" "}
                       <span className="dep-name">
-                        {category === "ERP" ? "" : category}
+                        {category == "ERP" ? "" : category}
                       </span>
                     </h2>
 
                     <Grid container justify="flex-start" spacing={2}>
                       {Object.entries(report).map(([repos, rep2]) => {
-
-                        // repos -> report title
-                        // rep2 -> monthwise report
                         return (
                           <Grid
                             item
