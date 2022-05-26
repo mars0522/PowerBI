@@ -307,7 +307,9 @@ class Home extends React.Component {
               {rep2[0].FK_IIL_MOD_FNS_ID !== "1243" &&
               rep2[0].FK_IIL_MOD_FNS_ID !== "1194" &&
               rep2[0].FK_IIL_MOD_FNS_ID !== "1193" &&
-              rep2[0].FK_IIL_MOD_FNS_ID !== '1195'  
+              rep2[0].FK_IIL_MOD_FNS_ID !== "1195" &&
+              rep2[0].FK_IIL_MOD_FNS_ID !== "1242" &&
+              rep2[0].FK_IIL_MOD_FNS_ID !== "1247"
                 ? rep2.map((row) => {
                     return (
                       <MenuItem>
@@ -481,14 +483,15 @@ class Home extends React.Component {
           if (
             rep2[0].FK_IIL_MOD_FNS_ID === "1243" ||
             rep2[0].FK_IIL_MOD_FNS_ID === "1194" ||
-            rep2[0].FK_IIL_MOD_FNS_ID !== "1193" ||
-            rep2[0].FK_IIL_MOD_FNS_ID !== '1195' 
-
+            rep2[0].FK_IIL_MOD_FNS_ID === "1193" ||
+            rep2[0].FK_IIL_MOD_FNS_ID === "1195" ||
+            rep2[0].FK_IIL_MOD_FNS_ID === "1242" ||
+            rep2[0].FK_IIL_MOD_FNS_ID === "1247"
           ) {
             console.log("rep: ", rep2);
             const repId = rep2[0].REPORT_ID;
             const userName = rep2[0].USER_NAME;
-            const overrider = this.state.empid;
+            let overrider = this.state.empid;
             let AK = this.state.AK;
             // let flag = 1;
 
