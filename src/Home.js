@@ -304,7 +304,7 @@ class Home extends React.Component {
                 <h4 className="heading1">{rep2[0].REPORT_NAME}</h4>
               </span>
 
-              {rep2[0].FK_IIL_MOD_FNS_ID !== '1243'
+              {rep2[0].FK_IIL_MOD_FNS_ID !== '1243' && rep2[0].FK_IIL_MOD_FNS_ID !== '1194'
               
                 ? rep2.map((row) => {
                     return (
@@ -388,7 +388,7 @@ class Home extends React.Component {
                         // flag = 1;
                       });
                     }
-                    let url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+                    let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
                     let encoded = btoa(url);
                     // console.log("Data in showreprot", data);
 
@@ -398,7 +398,7 @@ class Home extends React.Component {
 
                     return (
                       <MenuItem>
-                        <Link to={`/showreport?X=${encoded}`}>
+                        <Link to={`/showreport?X=${encoded}`} target="_blank">
                           <button
                             type="submit"
                             name="submit"
@@ -469,7 +469,7 @@ class Home extends React.Component {
           console.log("For single report is running in the cardheader else part");
           let params = this.getUrlVarsBase64()["W"];
 
-          if (rep2[0].FK_IIL_MOD_FNS_ID === "1243") {
+          if (rep2[0].FK_IIL_MOD_FNS_ID === "1243" || rep2[0].FK_IIL_MOD_FNS_ID=='1194') {
 
             console.log("rep: ",rep2)
             const repId = rep2[0].REPORT_ID;
@@ -498,11 +498,11 @@ class Home extends React.Component {
               
               // this.url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
               // this.encoded = btoa(this.url);
-              let url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+              let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
               let encoded = btoa(url);
               
             return (
-              <Link to={`/showreport?X=${encoded}`}>
+              <Link to={`/showreport?X=${encoded}`}  target="_blank" >
                 <CardHeader
                   avatar={
                     <Avatar className={classes.avatar}>
@@ -630,7 +630,7 @@ class Home extends React.Component {
           return (
             <div className="header-border mt-4">
               <span>
-                <h1 className="heading">{name} Reports</h1>
+                <h1 className="heading">{name} Reports (Dev)</h1>
               </span>
 
               {Object.entries(reports).map(([category, rep]) => {
