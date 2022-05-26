@@ -196,7 +196,7 @@ class Home extends React.Component {
     );
     let data = await response.json();
 
-    // console.log("AK running :", data.t);
+    console.log("AK running :", data.t);
 
     return data;
   }
@@ -374,27 +374,32 @@ class Home extends React.Component {
                     console.log("Row:", row);
                     const repId = row.REPORT_ID;
                     const userName = row.USER_NAME;
-                    let overrider = this.state.empid;
-                    let AK = this.state.AK;
+                  let overrider = this.state.empid;
+                  let AK = this.state.AK;
+                    // let AK = this.state.AK;
                     // let flag = 0
 
                     if (
                       row.OVERRIDER_TILL_EMP !== "-999" &&
-                      row.OVERRIDER_TILL_EMP !== "0"
+                      row.OVERRIDER_TILL_EMP !== "0" &&
+                      row.OVERRIDER_TILL_EMP !== undefined
                     ) {
                       overrider = row.OVERRIDER_TILL_EMP;
                     }
 
                     // const employeeid = overrider;
 
-                    if (overrider !== this.state.empid) {
-                      this.fetchOverrider(overrider).then((res) => {
-                        // console.log("res: ", res);
-                        AK = res.t;
-                        // console.log("url",url);
-                        // flag = 1;
-                      });
-                    }
+                    // if (
+                    //   overrider !== this.state.empid &&
+                    //   overrider !== undefined
+                    // ) {
+                    //   this.fetchOverrider(overrider).then((res) => {
+                    //     // console.log("res: ", res);
+                    //     AK = res.t;
+                    //     // console.log("url",url);
+                    //     // flag = 1;
+                    //   });
+                    // }
                     let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
                     let encoded = btoa(url);
                     // console.log("Data in showreprot", data);
@@ -499,19 +504,20 @@ class Home extends React.Component {
 
             if (
               rep2[0].OVERRIDER_TILL_EMP !== "-999" &&
-              rep2[0].OVERRIDER_TILL_EMP !== "0"
+              rep2[0].OVERRIDER_TILL_EMP !== "0" &&
+              rep2[0].OVERRIDER_TILL_EMP !== undefined
             ) {
               overrider = rep2[0].OVERRIDER_TILL_EMP;
             }
 
-            if (overrider !== this.state.empid) {
-              this.fetchOverrider(overrider).then((res) => {
-                console.log("res: ", res);
-                AK = res.t;
-                // console.log("url",url);
-                // flag = 1;
-              });
-            }
+            // if (overrider !== this.state.empid && overrider !== undefined) {
+            //   this.fetchOverrider(overrider).then((res) => {
+            //     console.log("res: ", res);
+            //     AK = res.t;
+            //     // console.log("url",url);
+            //     // flag = 1;
+            //   });
+            // }
             // const employeeid = overrider;
             // const AK =
             //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
@@ -650,7 +656,7 @@ class Home extends React.Component {
           return (
             <div className="header-border mt-4">
               <span>
-                <h1 className="heading">{name} Reports (Dev)</h1>
+                <h1 className="heading">{name} Reports (Dev) </h1>
               </span>
 
               {Object.entries(reports).map(([category, rep]) => {
