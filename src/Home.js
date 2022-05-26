@@ -304,8 +304,10 @@ class Home extends React.Component {
                 <h4 className="heading1">{rep2[0].REPORT_NAME}</h4>
               </span>
 
-              {rep2[0].FK_IIL_MOD_FNS_ID !== '1243' && rep2[0].FK_IIL_MOD_FNS_ID !== '1194'
-              
+              {rep2[0].FK_IIL_MOD_FNS_ID !== "1243" &&
+              rep2[0].FK_IIL_MOD_FNS_ID !== "1194" &&
+              rep2[0].FK_IIL_MOD_FNS_ID !== "1193" &&
+              rep2[0].FK_IIL_MOD_FNS_ID !== '1195'  
                 ? rep2.map((row) => {
                     return (
                       <MenuItem>
@@ -367,16 +369,19 @@ class Home extends React.Component {
                     );
                   })
                 : rep2.map((row) => {
-                  console.log("Row:",row)
+                    console.log("Row:", row);
                     const repId = row.REPORT_ID;
                     const userName = row.USER_NAME;
-                  let overrider = this.state.empid;
-                  let AK = this.state.AK;
-                  // let flag = 0 
-                  
-                  if (row.OVERRIDER_TILL_EMP !== '-999' && row.OVERRIDER_TILL_EMP !== '0') {
-                    overrider = row.OVERRIDER_TILL_EMP;
-                  }
+                    let overrider = this.state.empid;
+                    let AK = this.state.AK;
+                    // let flag = 0
+
+                    if (
+                      row.OVERRIDER_TILL_EMP !== "-999" &&
+                      row.OVERRIDER_TILL_EMP !== "0"
+                    ) {
+                      overrider = row.OVERRIDER_TILL_EMP;
+                    }
 
                     // const employeeid = overrider;
 
@@ -420,7 +425,9 @@ class Home extends React.Component {
       if (rep2.length > 1) {
         // for monthly reports
 
-        console.log("for monthly reports section in running in cardhearder function")
+        console.log(
+          "for monthly reports section in running in cardhearder function"
+        );
         return (
           <CardHeader
             avatar={
@@ -466,12 +473,19 @@ class Home extends React.Component {
       } else {
         if (rep2[0].REPORT_TYPE !== "ERP") {
           // for single reports
-          console.log("For single report is running in the cardheader else part");
+          console.log(
+            "For single report is running in the cardheader else part"
+          );
           let params = this.getUrlVarsBase64()["W"];
 
-          if (rep2[0].FK_IIL_MOD_FNS_ID === "1243" || rep2[0].FK_IIL_MOD_FNS_ID=='1194') {
+          if (
+            rep2[0].FK_IIL_MOD_FNS_ID === "1243" ||
+            rep2[0].FK_IIL_MOD_FNS_ID === "1194" ||
+            rep2[0].FK_IIL_MOD_FNS_ID !== "1193" ||
+            rep2[0].FK_IIL_MOD_FNS_ID !== '1195' 
 
-            console.log("rep: ",rep2)
+          ) {
+            console.log("rep: ", rep2);
             const repId = rep2[0].REPORT_ID;
             const userName = rep2[0].USER_NAME;
             const overrider = this.state.empid;
@@ -480,7 +494,10 @@ class Home extends React.Component {
 
             // const employeeid = overrider;
 
-            if (rep2[0].OVERRIDER_TILL_EMP !== '-999' && rep2[0].OVERRIDER_TILL_EMP !== '0' ) {
+            if (
+              rep2[0].OVERRIDER_TILL_EMP !== "-999" &&
+              rep2[0].OVERRIDER_TILL_EMP !== "0"
+            ) {
               overrider = rep2[0].OVERRIDER_TILL_EMP;
             }
 
@@ -491,18 +508,18 @@ class Home extends React.Component {
                 // console.log("url",url);
                 // flag = 1;
               });
-              }
-              // const employeeid = overrider;
-              // const AK =
-              //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
-              
-              // this.url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
-              // this.encoded = btoa(this.url);
-              let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
-              let encoded = btoa(url);
-              
+            }
+            // const employeeid = overrider;
+            // const AK =
+            //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
+
+            // this.url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+            // this.encoded = btoa(this.url);
+            let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
+            let encoded = btoa(url);
+
             return (
-              <Link to={`/showreport?X=${encoded}`}  target="_blank" >
+              <Link to={`/showreport?X=${encoded}`} target="_blank">
                 <CardHeader
                   avatar={
                     <Avatar className={classes.avatar}>
