@@ -268,7 +268,7 @@ class ShowReport extends React.Component {
     }
   }
   render() {
-    if (this.state.freeze == 1) {
+    if (this.state.freeze === 1) {
       return (
         <img
           src={

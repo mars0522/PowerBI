@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import "./Home.css";
 import Card from "@material-ui/core/Card";
 import Typography from "@material-ui/core/Typography";
@@ -22,7 +21,8 @@ import AES from "./Aes";
 import MenuItem from "@material-ui/core/MenuItem";
 import LoaderImage from "./Images/loaderpreovp.gif";
 import { Link } from "react-router-dom";
-
+import MeAndMyShowReport from "./MeAndMyShowReport";
+import MeAndMyCardHeader from "./MeAndMyCardHeader";
 ReactGA.initialize("UA-28761981-1"); //GA Tracking
 
 const styles = (theme) => ({
@@ -71,6 +71,7 @@ function groupBy(data, key) {
     return acc;
   }, {});
 }
+
 class Home extends React.Component {
   constructor() {
     super();
@@ -97,10 +98,10 @@ class Home extends React.Component {
   }
   //open and close popup
   handlePopoverOpen(event, id, rep2, category) {
-    if ((rep2 && rep2.length != 1) || !rep2) {
+    if ((rep2 && rep2.length !== 1) || !rep2) {
       this.setState({
         expanded: this.state.expanded ? null : id,
-        anchorEl: this.state.anchorEl == event.target ? null : event.target,
+        anchorEl: this.state.anchorEl === event.target ? null : event.target,
       });
     }
   }
@@ -157,7 +158,6 @@ class Home extends React.Component {
       console.log(e);
     }
   }
-
   getUrlParameter = (name) => {
     let params = this.getUrlVarsBase64()["W"];
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -252,6 +252,7 @@ class Home extends React.Component {
     await this.verifyToken(empid, AK);
   }
 
+
   render() {
     if (this.state.loading === "true") {
       return (
@@ -288,366 +289,13 @@ class Home extends React.Component {
     const reportName = groupBy(this.state.reports, "REPORT_TYPE");
     // group json data absed on report_type
 
+    let params = this.getUrlVarsBase64()["W"];
+
+
     const { classes } = this.props;
     const { anchorEl, expanded } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
-
-    const showreport = (rep2, category) => {
-      // rep2 is an array of monthly reports
-      // console.log("Showreport: ", rep2);
-      if (rep2.length > 1) {
-        return (
-          <div>
-            <ul>
-              <span>
-                <h4 className="heading1">{rep2[0].REPORT_NAME}</h4>
-              </span>
-
-              {rep2[0].FK_IIL_MOD_FNS_ID !== "1243" &&
-              rep2[0].FK_IIL_MOD_FNS_ID !== "1194" &&
-              rep2[0].FK_IIL_MOD_FNS_ID !== "1193" &&
-              rep2[0].FK_IIL_MOD_FNS_ID !== "1195" &&
-              rep2[0].FK_IIL_MOD_FNS_ID !== "1242" &&
-              rep2[0].FK_IIL_MOD_FNS_ID !== "1247"
-                ? rep2.map((row) => {
-                    return (
-                      <MenuItem>
-                        <form
-                          action="https://weberp6.intermesh.net:444/reports/powerbi/getreport"
-                          method="post"
-                          onSubmit={(e) => {
-                            Event(
-                              "ReportClick",
-                              category +
-                                "_" +
-                                rep2[0].REPORT_NAME +
-                                "_" +
-                                row.REPORT_MONTH
-                            );
-                          }}
-                          target="_blank"
-                        >
-                          <button
-                            type="submit"
-                            name="submit"
-                            value={row.REPORT_MONTH}
-                            className="btn-link"
-                          >
-                            {row.REPORT_MONTH}
-                          </button>
-                          <input
-                            type="hidden"
-                            name="reportname"
-                            value={row.REPORT_NAME}
-                          />
-                          <input
-                            type="hidden"
-                            name="workspaceid"
-                            value={row.WORKSPACE_ID}
-                          />
-                          <input
-                            type="hidden"
-                            name="reportid"
-                            value={row.REPORT_ID}
-                          />
-                          <input
-                            type="hidden"
-                            name="username"
-                            value={row.USER_NAME}
-                          />
-                          <input
-                            type="hidden"
-                            name="AK"
-                            value={this.state.AK}
-                          />
-                          <input
-                            type="hidden"
-                            name="empid"
-                            value={this.state.empid}
-                          />
-                        </form>
-                      </MenuItem>
-                    );
-                  })
-                : rep2.map((row) => {
-                    console.log("Row:", row);
-                    const repId = row.REPORT_ID;
-                    const userName = row.USER_NAME;
-                  let overrider = this.state.empid;
-                  let AK = this.state.AK;
-                    // let AK = this.state.AK;
-                    // let flag = 0
-
-                    if (
-                      row.OVERRIDER_TILL_EMP !== "-999" &&
-                      row.OVERRIDER_TILL_EMP !== "0" &&
-                      row.OVERRIDER_TILL_EMP !== undefined
-                    ) {
-                      overrider = row.OVERRIDER_TILL_EMP;
-                    }
-
-                    // const employeeid = overrider;
-
-                    // if (
-                    //   overrider !== this.state.empid &&
-                    //   overrider !== undefined
-                    // ) {
-                    //   this.fetchOverrider(overrider).then((res) => {
-                    //     // console.log("res: ", res);
-                    //     AK = res.t;
-                    //     // console.log("url",url);
-                    //     // flag = 1;
-                    //   });
-                    // }
-                    let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
-                    let encoded = btoa(url);
-                    // console.log("Data in showreprot", data);
-
-                    // console.log("varun")
-                    // const AK =
-                    //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
-
-                    return (
-                      <MenuItem>
-                        <Link to={`/showreport?X=${encoded}`} target="_blank">
-                          <button
-                            type="submit"
-                            name="submit"
-                            value={row.REPORT_MONTH}
-                            className="btn-link"
-                          >
-                            {row.REPORT_MONTH}
-                          </button>
-                        </Link>
-                      </MenuItem>
-                    );
-                  })}
-            </ul>
-          </div>
-        );
-      }
-    };
-    const cardheader = (rep2, repos, category) => {
-      if (rep2.length > 1) {
-        // for monthly reports
-
-        console.log(
-          "for monthly reports section in running in cardhearder function"
-        );
-        return (
-          <CardHeader
-            avatar={
-              <Avatar className={classes.avatar}>
-                <DescriptionIcon />
-              </Avatar>
-            }
-            title={
-              <Tooltip title={rep2[0].REPORT_DESCRIPTION}>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="h3"
-                  className={classes.name}
-                  style={{ fontSize: "21px", textAlign: "left" }}
-                >
-                  {repos}
-                </Typography>
-              </Tooltip>
-            }
-            action={
-              <IconButton
-                className={clsx(classes.expand, {
-                  [classes.expandOpen]:
-                    expanded === rep2[0].REPORT_CAT_MAPPING_ID,
-                })}
-                onClick={(e) =>
-                  this.handlePopoverOpen(
-                    e,
-                    rep2[0].REPORT_CAT_MAPPING_ID,
-                    rep2,
-                    category
-                  )
-                }
-                aria-expanded={expanded}
-                aria-label="show more"
-              >
-                <ExpandMoreIcon />
-              </IconButton>
-            }
-          />
-        );
-      } else {
-        if (rep2[0].REPORT_TYPE !== "ERP") {
-          // for single reports
-          console.log(
-            "For single report is running in the cardheader else part"
-          );
-          let params = this.getUrlVarsBase64()["W"];
-
-          if (
-            rep2[0].FK_IIL_MOD_FNS_ID === "1243" ||
-            rep2[0].FK_IIL_MOD_FNS_ID === "1194" ||
-            rep2[0].FK_IIL_MOD_FNS_ID === "1193" ||
-            rep2[0].FK_IIL_MOD_FNS_ID === "1195" ||
-            rep2[0].FK_IIL_MOD_FNS_ID === "1242" ||
-            rep2[0].FK_IIL_MOD_FNS_ID === "1247"
-          ) {
-            console.log("rep: ", rep2);
-            const repId = rep2[0].REPORT_ID;
-            const userName = rep2[0].USER_NAME;
-            let overrider = this.state.empid;
-            let AK = this.state.AK;
-            // let flag = 1;
-
-            // const employeeid = overrider;
-
-            if (
-              rep2[0].OVERRIDER_TILL_EMP !== "-999" &&
-              rep2[0].OVERRIDER_TILL_EMP !== "0" &&
-              rep2[0].OVERRIDER_TILL_EMP !== undefined
-            ) {
-              overrider = rep2[0].OVERRIDER_TILL_EMP;
-            }
-
-            // if (overrider !== this.state.empid && overrider !== undefined) {
-            //   this.fetchOverrider(overrider).then((res) => {
-            //     console.log("res: ", res);
-            //     AK = res.t;
-            //     // console.log("url",url);
-            //     // flag = 1;
-            //   });
-            // }
-            // const employeeid = overrider;
-            // const AK =
-            //   "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDM1NiIsImV4cCI6MTY1MDEwNTAwNiwiaWF0IjoxNjUwMDE4NjA2LCJpc3MiOiJFTVBMT1lFRSJ9.RGnyocarIFeyPZ8zkGuqYcRJYw32i3NoX3lteACgLuc";
-
-            // this.url = `https://localhost:3000/?reportid=${repId}&username=${userName}&empid=${employeeid}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
-            // this.encoded = btoa(this.url);
-            let url = `https://weberp6.intermesh.net:444/reports/powerbi/getreport?reportid=${repId}&username=${userName}&empid=${overrider}&tableName=Structure&columnName=Employee%20ID&AK=${AK}`;
-            let encoded = btoa(url);
-
-            return (
-              <Link to={`/showreport?X=${encoded}`} target="_blank">
-                <CardHeader
-                  avatar={
-                    <Avatar className={classes.avatar}>
-                      <DescriptionIcon />
-                    </Avatar>
-                  }
-                  title={
-                    <Tooltip title={rep2[0].REPORT_DESCRIPTION}>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="h3"
-                        className={classes.name}
-                        style={{ fontSize: "21px", textAlign: "left" }}
-                      >
-                        {repos}
-                      </Typography>
-                    </Tooltip>
-                  }
-                ></CardHeader>
-              </Link>
-            );
-          }
-
-          return (
-            <form
-              action="https://weberp6.intermesh.net:444/reports/powerbi/getreport"
-              method="post"
-              onSubmit={(e) => {
-                Event(
-                  "ReportClick",
-                  category +
-                    "_" +
-                    rep2[0].REPORT_NAME +
-                    "_" +
-                    rep2[0].REPORT_MONTH
-                );
-              }}
-              target="_blank"
-            >
-              <button type="submit" name="submit" value="" className="btn-link">
-                <CardHeader
-                  avatar={
-                    <Avatar className={classes.avatar}>
-                      <DescriptionIcon />
-                    </Avatar>
-                  }
-                  title={
-                    <Tooltip title={rep2[0].REPORT_DESCRIPTION}>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="h3"
-                        className={classes.name}
-                        style={{ fontSize: "21px", textAlign: "left" }}
-                      >
-                        {repos}
-                      </Typography>
-                    </Tooltip>
-                  }
-                />
-              </button>
-              <input
-                type="hidden"
-                name="reportname"
-                value={rep2[0].REPORT_NAME}
-              />
-              <input
-                type="hidden"
-                name="workspaceid"
-                value={rep2[0].WORKSPACE_ID}
-              />
-              <input type="hidden" name="reportid" value={rep2[0].REPORT_ID} />
-              <input type="hidden" name="username" value={rep2[0].USER_NAME} />
-              <input type="hidden" name="AK" value={this.state.AK} />
-              <input type="hidden" name="empid" value={this.state.empid} />
-            </form>
-          );
-        } else {
-          //for erp reports
-          var aes = AES("reportid=" + rep2[0].WORKSPACE_ID);
-          var url = "https://weberp.intermesh.net" + rep2[0].REPORT_ID + aes;
-          return (
-            <form
-              action={url}
-              method="post"
-              onSubmit={(e) => {
-                Event("ReportClick", category + "_" + rep2[0].REPORT_NAME);
-              }}
-              target="_blank"
-            >
-              <button type="submit" name="submit" value="" className="btn-link">
-                <CardHeader
-                  avatar={
-                    <Avatar className={classes.avatar}>
-                      <DescriptionIcon />
-                    </Avatar>
-                  }
-                  title={
-                    <Tooltip title={rep2[0].REPORT_DESCRIPTION}>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="h3"
-                        className={classes.name}
-                        style={{ fontSize: "21px", textAlign: "left" }}
-                      >
-                        {repos}
-                      </Typography>
-                    </Tooltip>
-                  }
-                />
-              </button>
-            </form>
-          );
-        }
-      }
-    };
-
     return (
       <div className="app">
         {Object.entries(reportName).map(([name, rep1]) => {
@@ -658,7 +306,6 @@ class Home extends React.Component {
               <span>
                 <h1 className="heading">{name} Reports (Dev) </h1>
               </span>
-
               {Object.entries(reports).map(([category, rep]) => {
                 const report = groupBy(rep, "REPORT_NAME"); // group jsaon data based on report name
                 return (
@@ -666,7 +313,7 @@ class Home extends React.Component {
                     <h2>
                       {" "}
                       <span className="dep-name">
-                        {category == "ERP" ? "" : category}
+                        {category === "ERP" ? "" : category}
                       </span>
                     </h2>
 
@@ -693,7 +340,18 @@ class Home extends React.Component {
                               }
                             >
                               <CardActionArea>
-                                {cardheader(rep2, repos, category)}
+                                {/*cardheader(rep2, repos, category)*/}
+                                <MeAndMyCardHeader
+                                  rep2={rep2}
+                                  repos={repos}
+                                  category={category}
+                                  classes={classes}
+                                  expanded={expanded}
+                                  params = {params}
+                                  handlePopoverOpen={this.handlePopoverOpen}
+                                  p_empid={this.state.empid}
+                                  p_AK = {this.state.AK}
+                                />
                               </CardActionArea>
                             </Card>
                             <Popover
@@ -713,7 +371,12 @@ class Home extends React.Component {
                                 horizontal: "center",
                               }}
                             >
-                              {showreport(rep2, category)}
+                              <MeAndMyShowReport
+                                rep2={rep2}
+                                category={category}
+                                pass_empid={this.state.empid}
+                                pass_AK={this.state.AK}
+                              />
                             </Popover>
                           </Grid>
                         );
@@ -729,5 +392,4 @@ class Home extends React.Component {
     );
   }
 }
-
 export default withStyles(styles, { withTheme: true })(Home);
