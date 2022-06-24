@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/Dev/PowerBI/static/css/main.5505ad07.chunk.css",
-    "main.js": "/Dev/PowerBI/static/js/main.e0f7ac12.chunk.js",
-    "main.js.map": "/Dev/PowerBI/static/js/main.e0f7ac12.chunk.js.map",
+    "main.js": "/Dev/PowerBI/static/js/main.58005781.chunk.js",
+    "main.js.map": "/Dev/PowerBI/static/js/main.58005781.chunk.js.map",
     "runtime-main.js": "/Dev/PowerBI/static/js/runtime-main.7166cd2f.js",
     "runtime-main.js.map": "/Dev/PowerBI/static/js/runtime-main.7166cd2f.js.map",
     "static/css/2.cccf0bc8.chunk.css": "/Dev/PowerBI/static/css/2.cccf0bc8.chunk.css",
-    "static/js/2.7199d97b.chunk.js": "/Dev/PowerBI/static/js/2.7199d97b.chunk.js",
-    "static/js/2.7199d97b.chunk.js.map": "/Dev/PowerBI/static/js/2.7199d97b.chunk.js.map",
+    "static/js/2.9789ed4a.chunk.js": "/Dev/PowerBI/static/js/2.9789ed4a.chunk.js",
+    "static/js/2.9789ed4a.chunk.js.map": "/Dev/PowerBI/static/js/2.9789ed4a.chunk.js.map",
     "static/js/3.cba797eb.chunk.js": "/Dev/PowerBI/static/js/3.cba797eb.chunk.js",
     "static/js/3.cba797eb.chunk.js.map": "/Dev/PowerBI/static/js/3.cba797eb.chunk.js.map",
     "index.html": "/Dev/PowerBI/index.html",
     "static/css/2.cccf0bc8.chunk.css.map": "/Dev/PowerBI/static/css/2.cccf0bc8.chunk.css.map",
     "static/css/main.5505ad07.chunk.css.map": "/Dev/PowerBI/static/css/main.5505ad07.chunk.css.map",
-    "static/js/2.7199d97b.chunk.js.LICENSE.txt": "/Dev/PowerBI/static/js/2.7199d97b.chunk.js.LICENSE.txt",
+    "static/js/2.9789ed4a.chunk.js.LICENSE.txt": "/Dev/PowerBI/static/js/2.9789ed4a.chunk.js.LICENSE.txt",
     "static/media/loaderpreovp.17269b86.gif": "/Dev/PowerBI/static/media/loaderpreovp.17269b86.gif"
   },
   "entrypoints": [
     "static/js/runtime-main.7166cd2f.js",
     "static/css/2.cccf0bc8.chunk.css",
-    "static/js/2.7199d97b.chunk.js",
+    "static/js/2.9789ed4a.chunk.js",
     "static/css/main.5505ad07.chunk.css",
-    "static/js/main.e0f7ac12.chunk.js"
+    "static/js/main.58005781.chunk.js"
   ]
 }

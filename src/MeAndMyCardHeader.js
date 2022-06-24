@@ -92,7 +92,7 @@ const MeAndMyCardHeader = ({ rep2, repos, category, classes, expanded,params,han
         let encoded = btoa(url);
 
         return (
-          <Link to={`/showreport?X=${encoded}`} target="_blank">
+          <Link to={`/showreport?X=${encoded}`} >
             <CardHeader
               avatar={
                 <Avatar className={classes.avatar}>
@@ -127,7 +127,9 @@ const MeAndMyCardHeader = ({ rep2, repos, category, classes, expanded,params,han
               category + "_" + rep2[0].REPORT_NAME + "_" + rep2[0].REPORT_MONTH
             );
           }}
+
           target="_blank"
+         
         >
           <button type="submit" name="submit" value="" className="btn-link">
             <CardHeader
